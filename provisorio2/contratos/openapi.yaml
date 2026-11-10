@@ -1,0 +1,26 @@
+# Contrato OpenAPI do fluxo prioritário
+# Cada resposta de erro deve referenciar o CA correspondente em "x-ca".
+
+openapi: 
+info:
+  title: 
+  version: 
+paths:
+  # /caminho:
+  #   metodo:
+  #     summary:
+  #     requestBody:
+  #     responses:
+  #       "200":
+  #         description:
+  #         content:
+  #           application/json:
+  #             example:
+  #       "400":
+  #         description:
+  #         x-ca: CA01-02
+  #         content:
+  #           application/json:
+  #             example:
+components:
+  schemas:

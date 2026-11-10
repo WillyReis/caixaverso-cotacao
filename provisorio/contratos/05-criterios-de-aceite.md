@@ -1,0 +1,22 @@
+# Criterios de Aceite
+
+Os cenarios abaixo sao candidatos derivados do material do grupo. Os criterios de API e pagina dependem da escolha das entregas e da aprovacao dos contratos correspondentes.
+
+| ID | Requisito | Cenario e resultado esperado | Situacao |
+| --- | --- | --- | --- |
+| CA-001 | RF-001, RF-002, RF-003 | **Dado** um agendamento para abertura ou encerramento de USD ou EUR, **quando** o BACEN retornar o boletim esperado para a data, **entao** persistir os valores de compra e venda identificados por moeda, data e tipo de boletim, e concluir somente esse item. | Candidato de aceite da coleta. |
+| CA-002 | RF-002, RF-004 | **Dado** um item pendente, **quando** a API retornar outro tipo de boletim, **entao** nao marcar o item como concluido e manter suas tentativas. | Candidato; tipo deve ser validado na integracao. |
+| CA-003 | RF-004, RN-005 | **Dado** um item cujo boletim esperado ainda nao esteja disponivel ou cuja consulta falhe, **quando** ocorrer a tentativa, **entao** manter o item pendente e agendar nova tentativa cinco minutos depois, sem registrar a coleta como concluida. | Candidato de aceite da coleta. |
+| CA-004 | RF-004, RN-005 | **Dado** que um item permaneceu sem sucesso por tres horas desde o inicio de suas tentativas, **quando** continuar pendente, **entao** passar a tentar de hora em hora ate obter o boletim. Abertura e encerramento mantem controles independentes. | Candidato; definir borda exata das tres horas junto ao calendario. |
+| CA-005 | RF-004, RN-007, RN-008 | **Dado** um item pendente do dia anterior, **quando** iniciar o novo dia, **entao** recuperar o item separadamente preservando data, moeda e boletim originais, sem bloquear a coleta atual; registrar aviso prolongado e, ao obter e armazenar o item, encerrar tentativas sem duplicar o registro. | Candidato; mecanismo de aviso e recuperacao apos reinicio pendentes. |
+| CA-006 | RF-005, RN-010 | **Dado** que um consumidor solicite um dado inexistente no armazenamento local, **quando** a consulta for processada, **entao** nao chamar o BACEN nem iniciar coleta sob demanda. A resposta de ausencia ou parcialidade deve seguir o contrato do canal selecionado. | Direcao confirmada; formato da resposta pendente. |
+| CA-007 | RF-006 | **Dado** que a entrega de API tenha sido selecionada e existam registros locais, **quando** um consumidor autorizado consultar usando filtros aprovados, **entao** retornar somente dados do banco local, incluindo compra e venda e o campo de disponibilidade para dados ausentes ou parciais. | Condicional; filtros, autorizacao, status HTTP e formato do campo pendentes. |
+| CA-008 | RF-008, RN-009 | **Dado** um periodo com datas pendentes, **quando** a equipe validar e aprovar a reconciliacao por `CotacaoMoedaPeriodo`, **entao** a rotina agendada deve comparar os boletins retornados com os registros locais por moeda, data e tipo. Resultado vazio ou falha tecnica nao pode ser tratado como prova de dia sem publicacao. | Proposta; depende de prova de conceito e aprovacao. |
+| CA-009 | RF-006 | **Dado** que a consulta por data futura seja incluida no canal escolhido, **quando** o usuario informar data posterior a data atual, **entao** rejeitar a consulta como data invalida conforme resposta acordada. | Criterio historico preservado; status, mensagem e aplicabilidade pendentes. |
+| CA-010 | RF-007 | **Dado** que a pagina web seja selecionada e existam dados para o periodo escolhido, **quando** o usuario selecionar USD ou EUR, **entao** apresentar o historico disponivel sem provocar coleta sob demanda. Ausencia, parcialidade e erro devem seguir comportamento aprovado. | Condicional; interface e visualizacao pendentes. |
+| CA-011 | RF-005 | **Dado** que o acesso direto ao banco local tenha sido selecionado e autorizado para um consumidor interno, **quando** esse consumidor consultar o historico pela forma acordada, **entao** recuperar os valores armazenados de compra e venda com moeda, data e tipo de boletim, sem chamada ao BACEN. | Condicional; acesso direto, autorizacao e consumidor de teste pendentes. |
+
+## Criterios historicos atualizados
+
+- O cenario anterior de sucesso de consulta continua aplicavel somente ao canal de consumo que o grupo selecionar (CA-007, CA-010 ou CA-011).
+- O cenario anterior de erro sincrono ao consultar o BACEN foi substituido por pendencia e novas tentativas do job (CA-003); nao deve reintroduzir chamada sob demanda.
