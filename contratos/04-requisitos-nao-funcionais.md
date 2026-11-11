@@ -29,7 +29,7 @@
 - RNF-006: RF-004, RN-005, RN-007 e RN-008.
 - RNF-007: entrega e canais selecionados pelo grupo; metas e critérios de medição ainda precisam ser aprovados.
 
-Os IDs de aceite citados referem-se aos [critérios de aceite provisórios](../provisorio/contratos/05-criterios-de-aceite.md), que permanecem candidatos até sua validação e consolidação no contrato oficial correspondente.
+Os IDs de aceite citados referem-se ao [contrato oficial de critérios de aceite](05-criterios-de-aceite.md), que mantém explícitos os cenários candidatos, condicionais e propostos e suas decisões pendentes.
 
 ## Pontos a confirmar
 

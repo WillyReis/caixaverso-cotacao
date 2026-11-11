@@ -21,7 +21,7 @@
 
 ## Rastreabilidade
 
-Os vínculos abaixo utilizam os IDs dos [critérios de aceite provisórios](../provisorio/contratos/05-criterios-de-aceite.md). Esses cenários permanecem candidatos até sua validação e consolidação no contrato oficial de critérios de aceite.
+Os vínculos abaixo utilizam os IDs do [contrato oficial de critérios de aceite](05-criterios-de-aceite.md). A situação e as condições de aplicação de cada cenário constam desse contrato; parâmetros pendentes e propostas continuam sujeitos à validação e à aprovação do grupo.
 
 - RF-001: CA-001.
 - RF-002: CA-001 e CA-002.
