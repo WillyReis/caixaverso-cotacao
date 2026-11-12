@@ -1,0 +1,591 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "American Dollar (bid and offer) - daily rates and Exchange Rates - daily bulletins",
+    "version" : "v1",
+    "title" : "American Dollar (bid and offer) - daily rates and Exchange Rates - daily bulletins"
+  },
+  "host" : "olinda.bcb.gov.br",
+  "basePath" : "/olinda/service/PTAX/version/v1/odata",
+  "schemes" : [ "https" ],
+  "produces" : [ "application/json;odata.metadata=minimal", "application/xml", "text/csv", "text/plain", "text/html" ],
+  "paths" : {
+    "/Currencies" : {
+      "get" : {
+        "summary" : "Currencies",
+        "description" : "Provides the list of currencies for which this data set is available.",
+        "operationId" : "Currencies",
+        "parameters" : [ {
+          "name" : "$format",
+          "in" : "query",
+          "description" : "Content type that will be returned",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "json", "xml", "text/csv", "text/plain", "text/html" ]
+        }, {
+          "name" : "$orderby",
+          "in" : "query",
+          "description" : "Entity properties order selection. e.g. Name asc, Age desc",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$filter",
+          "in" : "query",
+          "description" : "Entities filter selection. e.g. Name eq 'John'",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$skip",
+          "in" : "query",
+          "description" : "Index (greater than or equal to zero) of the first entity that will be returned",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "$top",
+          "in" : "query",
+          "description" : "Maximum number (greater than zero) of entities that will be returned",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 1,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseTipoMoeda"
+            }
+          }
+        }
+      }
+    },
+    "/DollarRateDate(dataCotacao=@dataCotacao)" : {
+      "get" : {
+        "summary" : "Bid and offer rates for the requested date",
+        "description" : "Provides bid and offer rates for the requested date.",
+        "operationId" : "DollarRateDate",
+        "parameters" : [ {
+          "name" : "@dataCotacao",
+          "in" : "query",
+          "description" : "Date",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "'([^']|'')*'"
+        }, {
+          "name" : "$format",
+          "in" : "query",
+          "description" : "Content type that will be returned",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "json", "xml", "text/csv", "text/plain", "text/html" ]
+        }, {
+          "name" : "$orderby",
+          "in" : "query",
+          "description" : "Entity properties order selection. e.g. Name asc, Age desc",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$filter",
+          "in" : "query",
+          "description" : "Entities filter selection. e.g. Name eq 'John'",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$skip",
+          "in" : "query",
+          "description" : "Index (greater than or equal to zero) of the first entity that will be returned",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "$top",
+          "in" : "query",
+          "description" : "Maximum number (greater than zero) of entities that will be returned",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 1,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseTipoCotacaoDolar"
+            }
+          }
+        }
+      }
+    },
+    "/DollarRatePeriod(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)" : {
+      "get" : {
+        "summary" : "Bid and offer rates for the requested time period.",
+        "description" : "Provides bid and offer rates for the requested time period.",
+        "operationId" : "DollarRatePeriod",
+        "parameters" : [ {
+          "name" : "@dataInicial",
+          "in" : "query",
+          "description" : "Start Date",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "'([^']|'')*'"
+        }, {
+          "name" : "@dataFinalCotacao",
+          "in" : "query",
+          "description" : "End date",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "'([^']|'')*'"
+        }, {
+          "name" : "$format",
+          "in" : "query",
+          "description" : "Content type that will be returned",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "json", "xml", "text/csv", "text/plain", "text/html" ]
+        }, {
+          "name" : "$orderby",
+          "in" : "query",
+          "description" : "Entity properties order selection. e.g. Name asc, Age desc",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$filter",
+          "in" : "query",
+          "description" : "Entities filter selection. e.g. Name eq 'John'",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$skip",
+          "in" : "query",
+          "description" : "Index (greater than or equal to zero) of the first entity that will be returned",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "$top",
+          "in" : "query",
+          "description" : "Maximum number (greater than zero) of entities that will be returned",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 1,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseTipoCotacaoDolar"
+            }
+          }
+        }
+      }
+    },
+    "/ExchangeRateDate(moeda=@moeda,dataCotacao=@dataCotacao)" : {
+      "get" : {
+        "summary" : "Bulletin - Bid and offer parities, bid and offer rates for the requested date.",
+        "description" : "Provides bid and offer parities, bid and offer rates for the requested date. There are 5 bulletins daily.",
+        "operationId" : "ExchangeRateDate",
+        "parameters" : [ {
+          "name" : "@moeda",
+          "in" : "query",
+          "description" : "Currency",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "'([^']|'')*'"
+        }, {
+          "name" : "@dataCotacao",
+          "in" : "query",
+          "description" : "Date",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "'([^']|'')*'"
+        }, {
+          "name" : "$format",
+          "in" : "query",
+          "description" : "Content type that will be returned",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "json", "xml", "text/csv", "text/plain", "text/html" ]
+        }, {
+          "name" : "$orderby",
+          "in" : "query",
+          "description" : "Entity properties order selection. e.g. Name asc, Age desc",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$filter",
+          "in" : "query",
+          "description" : "Entities filter selection. e.g. Name eq 'John'",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$skip",
+          "in" : "query",
+          "description" : "Index (greater than or equal to zero) of the first entity that will be returned",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "$top",
+          "in" : "query",
+          "description" : "Maximum number (greater than zero) of entities that will be returned",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 1,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseTipoCotacaoMoeda"
+            }
+          }
+        }
+      }
+    },
+    "/ExchangeRatePeriod(moeda=@moeda,dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)" : {
+      "get" : {
+        "summary" : "Bulletin - Bid and offer parities, bid and offer rates for the requested time period.",
+        "description" : "Provides bid and offer parities, bid and offer rates for the requested time period. There are 5 bulletins daily.",
+        "operationId" : "ExchangeRatePeriod",
+        "parameters" : [ {
+          "name" : "@moeda",
+          "in" : "query",
+          "description" : "Currency",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "'([^']|'')*'"
+        }, {
+          "name" : "@dataInicial",
+          "in" : "query",
+          "description" : "Start date",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "'([^']|'')*'"
+        }, {
+          "name" : "@dataFinalCotacao",
+          "in" : "query",
+          "description" : "End date",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "'([^']|'')*'"
+        }, {
+          "name" : "$format",
+          "in" : "query",
+          "description" : "Content type that will be returned",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "json", "xml", "text/csv", "text/plain", "text/html" ]
+        }, {
+          "name" : "$orderby",
+          "in" : "query",
+          "description" : "Entity properties order selection. e.g. Name asc, Age desc",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$filter",
+          "in" : "query",
+          "description" : "Entities filter selection. e.g. Name eq 'John'",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$skip",
+          "in" : "query",
+          "description" : "Index (greater than or equal to zero) of the first entity that will be returned",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "$top",
+          "in" : "query",
+          "description" : "Maximum number (greater than zero) of entities that will be returned",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 1,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseTipoCotacaoMoeda"
+            }
+          }
+        }
+      }
+    },
+    "/CotacaoMoedaAberturaOuIntermediario(codigoMoeda=@codigoMoeda,dataCotacao=@dataCotacao)" : {
+      "get" : {
+        "operationId" : "CotacaoMoedaAberturaOuIntermediario",
+        "parameters" : [ {
+          "name" : "@codigoMoeda",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "'([^']|'')*'"
+        }, {
+          "name" : "@dataCotacao",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "'([^']|'')*'"
+        }, {
+          "name" : "$format",
+          "in" : "query",
+          "description" : "Content type that will be returned",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "json", "xml", "text/csv", "text/plain", "text/html" ]
+        }, {
+          "name" : "$orderby",
+          "in" : "query",
+          "description" : "Entity properties order selection. e.g. Name asc, Age desc",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$filter",
+          "in" : "query",
+          "description" : "Entities filter selection. e.g. Name eq 'John'",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$skip",
+          "in" : "query",
+          "description" : "Index (greater than or equal to zero) of the first entity that will be returned",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseTipoCotacaoDolarAberturaOuIntermediario"
+            }
+          }
+        }
+      }
+    },
+    "/CotacaoMoedaPeriodoFechamento(codigoMoeda=@codigoMoeda,dataInicialCotacao=@dataInicialCotacao,dataFinalCotacao=@dataFinalCotacao)" : {
+      "get" : {
+        "operationId" : "CotacaoMoedaPeriodoFechamento",
+        "parameters" : [ {
+          "name" : "@codigoMoeda",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "'([^']|'')*'"
+        }, {
+          "name" : "@dataInicialCotacao",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "'([^']|'')*'"
+        }, {
+          "name" : "@dataFinalCotacao",
+          "in" : "query",
+          "required" : true,
+          "type" : "string",
+          "pattern" : "'([^']|'')*'"
+        }, {
+          "name" : "$format",
+          "in" : "query",
+          "description" : "Content type that will be returned",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "json", "xml", "text/csv", "text/plain", "text/html" ]
+        }, {
+          "name" : "$orderby",
+          "in" : "query",
+          "description" : "Entity properties order selection. e.g. Name asc, Age desc",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$filter",
+          "in" : "query",
+          "description" : "Entities filter selection. e.g. Name eq 'John'",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "$skip",
+          "in" : "query",
+          "description" : "Index (greater than or equal to zero) of the first entity that will be returned",
+          "required" : false,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseTipoCotacaoDolarAberturaOuIntermediario"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "TipoMoeda" : {
+      "properties" : {
+        "simbolo" : {
+          "type" : "string",
+          "description" : "Three digit code for the currency.",
+          "title" : "Three letter code"
+        },
+        "nomeFormatado" : {
+          "type" : "string",
+          "description" : "Currency name.",
+          "title" : "Currency name"
+        },
+        "tipoMoeda" : {
+          "type" : "string",
+          "description" : "Currency type. Currencies are divided into two types, A and B.",
+          "title" : "Currency type"
+        }
+      },
+      "description" : "Type used in Currencies dataset."
+    },
+    "ResponseTipoMoeda" : {
+      "properties" : {
+        "@odata.context" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TipoMoeda"
+          }
+        }
+      }
+    },
+    "TipoCotacaoDolar" : {
+      "properties" : {
+        "cotacaoCompra" : {
+          "type" : "number",
+          "description" : "Bid rate against the Brazilian currency: Brazilian currency/American Dollar",
+          "title" : "Bid rate"
+        },
+        "cotacaoVenda" : {
+          "type" : "number",
+          "description" : "Offer rate against the Brazilian currency: Brazilian currency/American Dollar",
+          "title" : "Offer rate"
+        },
+        "dataHoraCotacao" : {
+          "type" : "string",
+          "description" : "Date time of the bid and offer rates.",
+          "title" : "Date time"
+        }
+      },
+      "description" : "Type used in dollar rate functions."
+    },
+    "ResponseTipoCotacaoDolar" : {
+      "properties" : {
+        "@odata.context" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TipoCotacaoDolar"
+          }
+        }
+      }
+    },
+    "TipoCotacaoMoeda" : {
+      "properties" : {
+        "paridadeCompra" : {
+          "type" : "number",
+          "description" : "Bid parity of the searched currency against the American Dollar: Type A currencies: USD/[currency]. Type B currencies: [currency]/USD.",
+          "title" : "Bid parity"
+        },
+        "paridadeVenda" : {
+          "type" : "number",
+          "description" : "Offer parity of the searched currency against the American Dollar: Type A currencies: USD/[currency]. Type B currencies: [currency]/USD.",
+          "title" : "Offer parity"
+        },
+        "cotacaoCompra" : {
+          "type" : "number",
+          "description" : "Bid rate of the searched currency against the Brazilian currency: Brazilian currency/[currency].",
+          "title" : "Bid rate"
+        },
+        "cotacaoVenda" : {
+          "type" : "number",
+          "description" : "Offer rate of the searched currency against the Brazilian currency: Brazilian currency/[currency].",
+          "title" : "Offer rate"
+        },
+        "dataHoraCotacao" : {
+          "type" : "string",
+          "description" : "Date time of the currency parities and rates.",
+          "title" : "Date time"
+        },
+        "tipoBoletim" : {
+          "type" : "string",
+          "description" : "Bulletin type: Open (Abertura), Intermediary (Intermediário), Interbank Close (Fechamento Interbancário) or Ptax Close (Fechamento).",
+          "title" : "Bulletin type"
+        }
+      },
+      "description" : "Type used in currency exchange rate functions."
+    },
+    "ResponseTipoCotacaoMoeda" : {
+      "properties" : {
+        "@odata.context" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TipoCotacaoMoeda"
+          }
+        }
+      }
+    },
+    "TipoCotacaoDolarAberturaOuIntermediario" : {
+      "properties" : {
+        "cotacaoCompra" : {
+          "type" : "number",
+          "description" : "Bid rate of the searched currency against the Brazilian currency: Brazilian currency/[currency].",
+          "title" : "Bid rate"
+        },
+        "cotacaoVenda" : {
+          "type" : "number",
+          "description" : "Offer rate of the searched currency against the Brazilian currency: Brazilian currency/[currency].",
+          "title" : "Offer rate"
+        },
+        "dataHoraCotacao" : {
+          "type" : "string",
+          "description" : "Date time of the currency parities and rates.",
+          "title" : "Date time"
+        },
+        "tipoBoletim" : {
+          "type" : "string",
+          "description" : "Bulletin type: Open (Abertura), Intermediary (Intermediário), Interbank Close (Fechamento Interbancário) or Ptax Close (Fechamento).",
+          "title" : "Bulletin type"
+        }
+      },
+      "description" : "Type used in currency exchange rate functions."
+    },
+    "ResponseTipoCotacaoDolarAberturaOuIntermediario" : {
+      "properties" : {
+        "@odata.context" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TipoCotacaoDolarAberturaOuIntermediario"
+          }
+        }
+      }
+    }
+  }
+}
