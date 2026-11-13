@@ -20,8 +20,8 @@
 | RN-007 | Pendências que atravessam o dia | Preservar a data, a moeda e o boletim originais em fluxo agendado de recuperação separado, sem bloquear a coleta do novo dia. Registrar aviso de pendência prolongada. | RF-004 | Comportamento confirmado; mecanismo de aviso e escalonamento pendentes. |
 | RN-008 | Conclusão e duplicidade | Encerrar as tentativas do item após obter e armazenar o boletim. O reprocessamento não deve criar registros duplicados para o mesmo item lógico. | RF-003, RF-004 | Resultado confirmado; modelo físico e estratégia de persistência pendentes. |
 | RN-009 | Ausência de publicação versus falha | O retorno do boletim esperado em `CotacaoMoedaPeriodo` pode confirmar sua publicação. Uma consulta bem-sucedida sem esse boletim não prova, isoladamente, feriado ou ausência de publicação; falhas técnicas também não podem ser classificadas como ausência de boletim. | RF-002, RF-004, RF-008 | Regra de classificação confirmada; reconciliação por esse recurso proposta e sujeita à validação técnica e à aprovação do grupo. |
-| RN-010 | Leitura sem coleta sob demanda | Consultas dos consumidores devem usar somente dados locais. A ausência de dados não autoriza chamada síncrona ao BACEN nem atualização sob demanda. | RF-005, RF-006, RF-007 | Confirmada pelo ADR-002. Aplica-se a todos os canais de consumo selecionados. |
-| RN-011 | Fluxos históricos superados | Diagramas e critérios antigos que chamam o BACEN quando o banco está vazio são referências históricas e não devem orientar a implementação atual. | RF-005, RF-006, RF-007 | Restrição confirmada pelo ADR-002; os fluxos antigos foram superados. |
+| RN-010 | Leitura sem coleta sob demanda | Consultas dos consumidores devem usar somente dados locais pela API interna. A ausência de dados não autoriza chamada síncrona ao BACEN nem atualização sob demanda. | RF-005, RF-006 | Confirmada pelo ADR-002. A API é o único canal de consumo; RF-007 está fora do escopo. |
+| RN-011 | Fluxos históricos superados | Diagramas e critérios antigos que chamam o BACEN quando o banco está vazio são referências históricas e não devem orientar a implementação atual. | RF-005, RF-006 | Restrição confirmada pelo ADR-002; os fluxos antigos foram superados. |
 
 ## Pontos a confirmar
 
@@ -31,10 +31,16 @@
 - Integridade: definir o modelo físico, as restrições e a estratégia de persistência que assegurem a ausência de duplicidade exigida pela RN-008.
 - Reconciliação: validar a completude e os tipos de boletim retornados por `CotacaoMoedaPeriodo` e aprovar seu uso antes de implementar o fluxo proposto. A distinção entre ausência e falha da RN-009 permanece obrigatória.
 
+## Aplicação da stack
+
+- Quarkus Scheduler executa os fluxos agendados. A política por item da RN-005 deve controlar a próxima tentativa; não substituí-la por retries imediatos ou backoff padrão de biblioteca.
+- MicroProfile REST Client e SmallRye Fault Tolerance tratam a integração e as falhas técnicas. Timeouts e eventual limite de uma tentativa técnica precisam ser aprovados sem multiplicar silenciosamente as chamadas previstas na RN-005.
+- Hibernate ORM com Panache Repository e Flyway implementam a persistência. Sua adoção não define automaticamente a chave física, o upsert, a precisão monetária ou a estratégia de recuperação.
+
 ## Referências
 
 - [Constituição do Projeto](00-constituicao.md)
 - [Contexto](01-contexto.md)
 - [Requisitos Funcionais](02-requisitos-funcionais.md)
 - [ADR-002: Ingestão agendada com persistência local](../adr/adr-002.md)
-- [Primeira versão provisória das regras de negócio](../provisorio/contratos/03-regras-de-negocio.md)
+- [Plano Técnico](06-plano-tecnico.md)
