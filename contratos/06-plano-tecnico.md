@@ -152,17 +152,55 @@ A verificação deve seguir os [Critérios de Aceite](05-criterios-de-aceite.md)
 - Verificar serialização Jackson, separação entre entidades e DTOs e validação dos filtros e dados conforme o contrato aprovado.
 - Testar consumidores autorizados e não autorizados quando provedor e perfis forem aprovados. Não incluir testes de frontend ou de consulta direta ao banco como canal do produto.
 
-## Decisões técnicas pendentes
+## Detalhamento aprovado para implementação em 2026-11-13
 
-- Aprovar o contrato da API obrigatória: filtros, disponibilidade, resposta parcial, erros, status HTTP, datas futuras e consumidor de teste.
-- Aprovar provedor OIDC, perfis, configuração de credenciais e controle de acesso aos endpoints operacionais. A tecnologia de segurança já está definida.
-- Aprovar horários, fuso, calendário, borda das três horas, limites de execução, recuperação após reinício, aviso e escalonamento.
-- Definir modelo físico, precisão e escala, restrições, estratégia de persistência e estado de pendências no H2 em arquivo, com migrações Flyway.
-- Detalhar pacotes, configuração por ambiente, caminho do arquivo H2, volume, backup, retenção e ambiente de implantação, respeitando a topologia de um único processo JVM aprovada no ADR-002.
+O usuário autorizou as propostas técnicas da IA necessárias ao MVP e escolheu abertura às 9h e encerramento às 16h. Essas decisões complementam os requisitos aprovados; os itens RF-007, RF-008, CA-008, CA-009, CA-010, CA-011 e T-009 não são liberados por esta autorização.
+
+### Build e organização
+
+- BOM e plugin Quarkus fixados em 3.40.1, patch confirmado nos metadados do repositório. Java 25, Maven Wrapper 3.9.16 e a linha Quarkus 3.40 permanecem as decisões de stack.
+- Pacote raiz `br.gov.caixa.caixaverso.cotacao`, separado em `domain`, `application`, `persistence`, `bacen`, `scheduling`, `api` e `config`.
+- Os testes unitários exercem o domínio; QuarkusTest, REST Assured e WireMock exercem a aplicação com H2 real. Os testes de durabilidade iniciam e reiniciam o JAR sobre um arquivo H2 temporário. `mvnw verify` é o comando completo de CI.
+- Não há aplicação nem testes legados. O projeto é API-only; navegador é não aplicável. H2 é o banco real aprovado, não substituto de outro banco; Docker é necessário somente para verificar a imagem e o Compose.
+
+### API de consulta
+
+- `GET /api/v1/cotacoes`, com filtros obrigatórios `moeda` (USD ou EUR), `inicio` e `fim` (datas ISO `yyyy-MM-dd`, inclusivas).
+- `pagina` inicia em zero e tem padrão zero; `tamanho` tem padrão 50 e limite 200. O período máximo é 366 dias, limite técnico configurável para evitar consultas sem limite, não uma meta de desempenho.
+- Período invertido, moeda não suportada, paginação inválida, datas malformadas ou período acima do limite retornam 400 com erro JSON. Datas futuras não são rejeitadas especificamente; CA-009 permanece proposta.
+- Sucesso e ausência local retornam 200 com objeto contendo filtros, `disponibilidade`, `registros`, `lacunas` e `paginacao`. A disponibilidade é `DISPONIVEL` quando os dois boletins existem para cada data consultada, `PARCIAL` quando faltam combinações e existe algum registro e `AUSENTE` quando não há registros. A classificação considera todo o período, não somente a página.
+- `lacunas` enumera data e boletim sem registro local. A disponibilidade descreve cobertura local, não comprova feriado, publicação ou existência de cotação no BACEN.
+- Cada registro inclui data, moeda, boletim (`ABERTURA` ou `ENCERRAMENTO`), compra, venda e horário informado pelo BACEN. Compra e venda são BigDecimal serializados como strings decimais, sem conversão para double.
+- O perfil autorizado é `cotacao-leitor`. OIDC valida bearer tokens; o provedor, client ID, claim de perfis e eventuais credenciais são configuração externa. Token ausente ou inválido retorna 401; perfil insuficiente retorna 403. A API não habilita escrita nem chama o BACEN.
+- Health é usado pelo processo local/container. OpenAPI e métricas exigem o perfil `cotacao-operador` em produção; Swagger UI só existe em desenvolvimento e testes. A implantação deve restringir a exposição dos endpoints de saúde à infraestrutura interna.
+
+### Persistência e recuperação
+
+- Chave física Long gerada por identidade; restrição única em data, moeda e boletim em cotações e pendências. Entidades distintas preservam a identificação lógica.
+- Compra e venda usam DECIMAL(38,18). Validar valores positivos e representação exata nesse domínio antes de persistir; dados fora da precisão ou escala não são arredondados silenciosamente e mantêm a coleta pendente como falha de payload.
+- Pendências persistem estado, início e última tentativa, próxima tentativa, contador, último resultado, erro técnico e token/prazo de uma reivindicação de processamento. Claims e conclusão usam transações curtas e bloqueio por item; chamadas HTTP ficam fora da transação.
+- Conclusão grava a cotação e conclui somente a pendência correspondente na mesma transação. Reprocessamento não altera uma cotação já coletada nem cria duplicata.
+- Uma reivindicação expirada pode ser retomada; no reinício, reivindicações do processo anterior voltam a pendentes sem perder identificação, contador ou início das tentativas. Um token evita que uma resposta atrasada conclua uma reivindicação substituída.
+- Caminho local padrão `./data/cotacao`; Docker usa `/work/data/cotacao` em volume. Flyway aplica migrações e Hibernate valida; reinícios não recriam o esquema.
+
+### Coleta e operação
+
+- Horários aprovados: 9h e 16h em `America/Sao_Paulo`. O início cria itens USD/EUR independentes, sem requisição de consumidor. Recuperação de dias anteriores usa execução agendada separada.
+- A coleta fica desabilitada até habilitação explícita. Para habilitar, configurar dias de execução e exceções de calendário; não inferir feriados nem classificar uma resposta vazia como dia sem publicação. Se o processo perder um disparo diário, o processamento periódico cria os itens já devidos do dia atual.
+- Nova tentativa em cinco minutos quando a tentativa ocorre antes de completar três horas desde a primeira tentativa; a partir de três horas, em uma hora. Não há limite final ou descarte automático de pendências.
+- Defaults técnicos configuráveis: verificação de itens devidos a cada 30 segundos; recuperação a cada minuto; até 20 itens por lote; timeout de conexão 3 segundos, leitura 10 segundos e limite SmallRye Fault Tolerance de 20 segundos por chamada. Sem retries imediatos. Lease de processamento de dois minutos deve ser maior que o limite de uma chamada.
+- Logs JSON registram identificação do item, resultado e falha; WARN comunica pendência anterior ao dia atual. Não registrar tokens, credenciais ou payloads integrais. Métricas contam resultados e tentativas; não certificam completude do histórico.
+- Não armazenar o JSON integral do BACEN. Usar o recurso de consulta diária e reconhecer exatamente `Abertura` e `Fechamento PTAX`; ignorar intermediários e fechamento interbancário.
+
+## Pendências não liberadas para produção
+
+- Confirmar provedor OIDC, client ID, claim de perfis, credenciais e controles de rede dos endpoints operacionais no ambiente de implantação.
+- Configurar calendário, exceções e ativação da coleta; validar a publicação dos boletins e qualquer escalonamento externo. Datas futuras continuam sem regra específica aprovada.
+- Aprovar backup, retenção, restauração, ambiente de implantação e metas operacionais; o caminho local e o volume do MVP não constituem compromisso de produção.
 - Validar tecnicamente `CotacaoMoedaPeriodo` e recuperar e validar as URLs oficiais completas da API PTAX e dos exemplos BACEN.
 - Incorporar os diagramas C4 de níveis 1 e 2 mencionados pelo grupo. O ADR-001 já foi localizado e sua decisão de stack está registrada.
-- Confirmar a versão final do Golden Path e quais orientações se aplicam ao projeto e ao fluxo SDD com LLM.
-- Fixar o patch do BOM, plugins e versões externas e validar as extensões e os testes no build com Maven 3.9.16. Definir as metas operacionais e respectivos métodos de medição.
+- Confirmar a versão final do Golden Path e sua conformidade corporativa. A implementação pelos contratos locais foi autorizada enquanto essa validação permanece aberta.
+- Executar build, testes e verificação de imagem; somente resultados executados podem ser declarados aprovados.
 
 ## Referências
 

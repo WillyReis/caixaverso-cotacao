@@ -1,9 +1,9 @@
 <!--
 Relatorio de sincronizacao
-Versao: sem versionamento explicito -> 1.0.0 (primeira versao documental).
+Versao: 1.0.0 -> 1.0.1 (autorizacao dos detalhes de implementacao).
 Alteracoes: stack complementar, API obrigatoria, ausencia de pagina web e operacao do MVP.
 Secao adicionada: Governanca.
-Propagacao para ADRs, contexto, requisitos, criterios, plano, tarefas, riscos e README: concluida.
+Propagacao inicial concluida; implementacao e evidencias em elaboracao.
 IDs historicos preservados; frontend e acesso direto ao banco fora do escopo.
 Verificacao: definicoes, links locais, tabelas, rastreabilidade e estados de tarefas.
 Templates externos de migracao: nao aplicaveis ao projeto novo; estrutura local preservada.
@@ -13,7 +13,7 @@ Pendente: TODO(RATIFICATION_DATE), confirmar a data original de ratificacao da c
 
 # 00 · Constituição do Projeto
 
-Versão documental: 1.0.0. Última alteração: 2026-11-13.
+Versão documental: 1.0.1. Última alteração: 2026-11-13.
 Ratificação original: TODO(RATIFICATION_DATE): confirmar a data de adoção inicial pelo grupo.
 
 ## Objetivo
@@ -83,6 +83,8 @@ Priorizar extensões oficiais do Quarkus e implementações SmallRye quando houv
 ## Governança
 
 - As escolhas de stack de 2026-11-13 incorporam as definições explícitas do grupo e as escolhas complementares delegadas à IA. Essa delegação não aprova parâmetros operacionais, regras de negócio ou contratos HTTP ainda pendentes.
+- Na solicitação de implementação de 2026-11-13, o usuário autorizou explicitamente as propostas técnicas da IA para API, persistência e recuperação e selecionou abertura às 9h e encerramento às 16h em America/Sao_Paulo. O detalhamento aprovado está no Plano Técnico. Calendário de publicação, provedor OIDC, credenciais, metas de produção e propostas adicionais não foram presumidos.
+- A implementação pode seguir os contratos locais enquanto a referência corporativa do Golden Path permanece pendente de validação. Isso não declara conformidade com uma referência indisponível.
 - Alterações exigem atualização dos ADRs e contratos afetados, preservação dos IDs e verificação de consistência e rastreabilidade.
 - A versão documental segue versionamento semântico: major para mudanças incompatíveis de princípios, minor para novas diretrizes e patch para esclarecimentos sem mudança de comportamento.
 - Revisões e implementações devem verificar aderência à Constituição, aos ADRs aceitos e aos critérios de aceite aplicáveis.
